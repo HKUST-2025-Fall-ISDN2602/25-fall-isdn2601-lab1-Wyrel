@@ -1,37 +1,39 @@
 #include "Arduino.h"
 
-#define Vin  //*** Define the GPIO pin 12 as Vin ***
-#define Vout   //*** Define the GPIO pin 27 as Vout ***
+#define Vin 12//*** Define the GPIO pin 12 as Vin ***
+#define Vout 27//*** Define the GPIO pin 27 as Vout ***
 //#define Cal //*** Define the GPIO pin 14 as the node for current calcultion ***
 
 //float R = ; //*** Resistance in Mohm ***
 
-float x;
-float y;
+float duty;
+float vOut;
 // float c;
 
 void setup() {
 
-  Serial.begin(); //*** Define the data rate as 115200 ***
-  pinMode(Vin, ); //*** Set Vin as OUTPUT ***
-  pinMode(Vout, ); //*** Set Vout as INPUT ***
+  Serial.begin(115200); //*** Define the data rate as 115200 ***
+  analogReadResolution(12);
+
+  pinMode(Vin, OUTPUT); //*** Set Vin as OUTPUT ***
+  pinMode(Vout, IINPUT); //*** Set Vout as INPUT ***
   // pinMode(Cal, ); //*** Set Cal as INPUT ***
   
-  delay();   //*** Set 100 ms delay ***
+  delay(100);   //*** Set 100 ms delay ***
   //This task only needs to be done once, thus it is placed in setup().
-  Serial.println(" "); // display duty cycle,Vout for TASK 1 or I,Vout for Task 2 3 4
+  Serial.println("duty cycle (%), Vout (V)"); // display duty cycle,Vout for TASK 1 or I,Vout for Task 2 3 4
   for (int onPeriod = 0; onPeriod < 256; onPeriod++) 
     {
     
-    analogWrite( ,onPeriod);// Output PWM at Vin      
-    int Vout_value = analogRead(); // read the voltage level at Vout 
+    analogWrite(Vin, onPeriod);// Output PWM at Vin      
+    int Vout_value = analogRead(Vout); // read the voltage level at Vout 
     // int c_value = analogRead(); // read the voltage level at the node for current calcultion  
     // c=  ;//calculate the voltage at the node for current calcultion  
-    x =  ; // calculate duty cycle for TASK 1 or the voltage at Vout in mV for Task 2 3 4
-    y =  ; // calculate the voltage at Vout in V for TASK 1 or current in uA for Task 2 3 4
-    Serial.print(x); 
-    Serial.print(","); // seperate values by comma 
-    Serial.println(y);
+    x = float(onPeriod)*100/255 ; // calculate duty cycle for TASK 1 or the voltage at Vout in mV for Task 2 3 4
+    y = float(Vout_value*3.3)/4095 ; // calculate the voltage at Vout in V for TASK 1 or current in uA for Task 2 3 4
+    Serial.print(duty, 2); 
+    Serial.print("%,"); // seperate values by comma 
+    Serial.println(vOut, 3);
   }
 
   // Press reset button for a new sweep
